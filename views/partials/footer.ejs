@@ -1,0 +1,233 @@
+<div class="ui inverted footer">
+  <div class="ui container">
+    DATA BASE MANAGEMENT Group 5 - Wholesale Management System
+  </div>
+</div>
+
+<script>
+
+
+function createBarChartTable1(data) {
+    const chartLoc = document.getElementById('myChart');
+    // chartLoc.style.height = '50px';
+    // chartLoc.style.width = '80px';
+    const ctx = chartLoc.getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data.map(item => item.ProductName),
+            datasets: [{
+                label: 'Inventory Level',
+                data: data.map(item => item.TotalUnits),
+                backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                borderColor: 'rgba(0, 123, 255, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                title: {
+                    display: true,
+                    text: 'Inventory Levels Per Unit'
+                }
+            }
+        }
+    });
+}
+
+function createPieChart1(data) {
+    const ctx = document.getElementById('myPieChart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: data.map(item => item.SupplierName),
+            datasets: [{
+                label: 'Supplier Contribution',
+                data: data.map(item => item.ProductCount),
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Weighted Supplier Stock Contribution'
+                }
+            }
+        }
+    });
+}
+
+function createBarChartTable2(data) {
+    const ctx = document.getElementById('myChart2').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data.map(item => item.CustomerName),
+            datasets: [{
+                label: 'Accounts Receivable',
+                data: data.map(item => item.TotalReceivable),
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }, {
+                label: 'Defaulted Amount',
+                data: data.map(item => item.TotalDefaulted),
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                },
+                title: {
+                    display: true,
+                    text: 'Customer Receivables and Defaults'
+                }
+            }
+        }
+    });
+}
+    document.addEventListener('DOMContentLoaded', function() {
+
+        //show table1
+        fetch('/inventory-chart')
+            .then(response => response.json())
+            .then(data => {
+                createBarChartTable1(data);
+            }).catch(error => console.error('Error:', error));
+
+        //show piechart1
+        fetch('/supplierWeight-chart')
+            .then(response => response.json())
+            .then(data => {
+                createPieChart1(data);
+            })
+            .catch(error => console.error('Error:', error));
+
+        //show table2
+        fetch('/rec-and-def-chart')
+            .then(response => response.json())
+            .then(data => {
+                createBarChartTable2(data);
+            }).catch(error => console.error('Error:', error));
+
+
+        document.querySelectorAll('.showSqlButton').forEach(button => {
+            button.addEventListener('click', function() {
+                var targetId = this.getAttribute('data-target');
+                var scrollableTable = document.getElementById(targetId);
+                var sqlQueries = document.getElementById('sqlQueries' + targetId);
+
+                if (scrollableTable.style.display === "none") {
+                    this.innerText = "Show SQL";
+                    scrollableTable.style.display = "block";
+                    sqlQueries.style.display = "none";
+                } else {
+                    this.innerText = "Hide SQL";
+                    scrollableTable.style.display = "none";
+                    sqlQueries.style.display = "block";
+                }
+            });
+        });
+
+
+        //for the new contextmenu
+        var contextMenu = document.createElement("div");
+        contextMenu.innerHTML = "<div><button class='ui segment' id='deleteRow'>Delete Row</button></div>";
+        contextMenu.style.display = "none";
+        contextMenu.style.position = "absolute";
+        document.body.appendChild(contextMenu);
+
+    // Right-click on any table row
+        document.querySelectorAll('.ui.celled.table tbody tr').forEach(row => {
+            row.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                contextMenu.style.top = e.pageY + "px";
+                contextMenu.style.left = e.pageX + "px";
+                contextMenu.style.display = "block";
+
+                // Store the row for later use
+                contextMenu.rowElement = this;
+
+                // Find the closest .scrollable-table to get the table name
+                var closestTable = this.closest('.scrollable-table');
+                contextMenu.tableName = closestTable.dataset.tableName;
+
+                // Get the column name for the ID (assuming it's the first column)
+                var columnHeader = closestTable.querySelector('.ui.celled.table thead tr th:first-child');
+                contextMenu.columnName = columnHeader ? columnHeader.innerText : null;
+            });
+        });
+
+        // Click on delete option in the context menu
+        document.getElementById('deleteRow').addEventListener('click', function() {
+            var rowElement = contextMenu.rowElement;
+            var rowId = rowElement.querySelector('td:first-child').innerText; // Row ID is in the first cell
+            var tableName = contextMenu.tableName; // Table name
+            var columnName = contextMenu.columnName; // Column name
+
+            // AJAX request to the server to delete the row
+            if (!rowId || !tableName || !columnName) {
+                console.error('Error deleting row: Missing data');
+                console.error('Row ID:', rowId);
+                console.error('Table name:', tableName);
+                console.error('Column name:', columnName);
+                return;
+            }
+            fetch('/delete-row', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ tableName: tableName, rowId: rowId, columnName: columnName }),
+            }).then(data => {
+                console.log('Success:', data);
+                if (data.status == 200) {
+                    //relode the whole page
+                    window.location.reload(true);
+                } else {
+                    console.error('Error deleting row:', data);
+                }
+            }).catch((error) => {
+                console.error('Error:', error);
+            });
+
+
+            // Hide the context menu
+            contextMenu.style.display = "none";
+        });
+
+        // Close the context menu if clicked elsewhere
+        document.addEventListener('click', function(e) {
+            if (e.target !== contextMenu) {
+                contextMenu.style.display = "none";
+            }
+        });
+
+
+    });
+</script>
+

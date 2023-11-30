@@ -1,0 +1,219 @@
+<%-include('./partials/header');%>
+<main>
+    <!--    
+        Stock Details
+        Reorders and Inventory Checks
+        Supplier Information
+        Customer Relations
+            allStockDetailInfo: allStockDetailInfo,
+            allSupplierInfo: allSupplierInfo,
+            getAllReorders: getAllReorders
+    -->
+    <div class="ui segment" style="text-align:center">
+        <h1>Stock Details</h1>
+    </div>
+
+    <div id="container" class="ui grid segment">
+        <div class="segment seven wide column">
+            <canvas id="myChart"></canvas>
+        </div>
+        <div class="segment eight wide column">
+            <canvas id="myPieChart"></canvas>
+        </div>
+    </div>
+    <div class="ui grid segment">
+        <div class="segment eight wide column">
+            <div class="scrollable-table">
+                <h1>Stock Details Table:</h1>
+                <div class="scrollable-table" id="scrollableTableStock" data-table-name="Stock">
+                    <form action="/add-stock-s" method="post">
+                        <table class="ui celled table">
+                            <thead>
+                                <tr>
+                                    <% if (allStockDetailInfo.length > 0) { %>
+                                        <% Object.keys(allStockDetailInfo[0]).forEach(function(key) { %>
+                                            <th><%= key %></th>
+                                        <% }); %>
+                                    <% } %>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% allStockDetailInfo.forEach(function(stock) { %>
+                                    <tr>
+                                        <% Object.values(stock).forEach(function(value) { %>
+                                            <td><%= value %></td>
+                                        <% }); %>
+                                    </tr>
+                                <% }); %>
+
+                                <!-- Form Inputs -->
+                                <tr>
+                                    <% var first = true; %>
+                                    <% Object.keys(allStockDetailInfo[0]).forEach(function(key) { %>
+                                        <% if (first) { %>
+                                            <td><button type="submit" class="ui button">Submit</button></td>
+                                            <% first = false; %>
+                                        <% } else { %>
+                                            <td><input type="text" class="form-input" name="<%= key %>" placeholder="<%= key %>"></td>
+                                        <% } %>
+                                    <% }); %>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+                <div class="sql-queries" id="sqlQueriesscrollableTableStock" style="display: none;">
+                    <div class="ui segment"><strong><pre><%= getQueries.QUERY_GET_ALL_STOCK %></pre></strong></div>
+                    <div class="ui segment"><strong><pre><%= postQueries.QUERY_POST_NEW_STOCK %></pre></strong></div>
+                </div>
+                <button class="ui button showSqlButton" data-target="scrollableTableStock">Show SQL</button>
+                <!--<div class="ui segment statusMessage" style="display: none;"><strong><pre></pre></strong></div>-->
+
+
+
+                <h1>Inventory Details Table:</h1>
+                <div class="scrollable-table" id="scrollableTableInv" data-table-name="Inventory">
+                    <form action="/add-inv-s" method="post">
+                        <table class="ui celled table">
+                            <thead>
+                                <tr>
+                                    <% if (getAllInventory.length > 0) { %>
+                                        <% Object.keys(getAllInventory[0]).forEach(function(key) { %>
+                                            <th><%= key %></th>
+                                        <% }); %>
+                                    <% } %>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% getAllInventory.forEach(function(Inv) { %>
+                                    <tr>
+                                        <% Object.values(Inv).forEach(function(value) { %>
+                                            <td><%= value %></td>
+                                        <% }); %>
+                                    </tr>
+                                <% }); %>
+
+                                <!-- Form Inputs -->
+                                <tr>
+                                    <% var first = true; %>
+                                    <% Object.keys(getAllInventory[0]).forEach(function(key) { %>
+                                        <% if (first) { %>
+                                            <td><button type="submit" class="ui button">Submit</button></td>
+                                            <% first = false; %>
+                                        <% } else { %>
+                                            <td><input type="text" class="form-input" name="<%= key %>" placeholder="<%= key %>"></td>
+                                        <% } %>
+                                    <% }); %>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+                <div class="sql-queries" id="sqlQueriesscrollableTableInv" style="display: none;">
+                    <div class="ui segment"><strong><pre><%= getQueries.QUERY_GET_ALL_INVENTORY %></pre></strong></div>
+                    <div class="ui segment"><strong><pre><%= postQueries.QUERY_POST_NEW_INVENTORY %></pre></strong></div>
+                </div>
+                <button class="ui button showSqlButton" data-target="scrollableTableInv">Show SQL</button>
+
+
+            </div>
+        </div>
+        <div class="segment eight wide column">
+            <div class="scrollable-table">
+                <h1>Supplier Information Table</h1>
+                <div class="scrollable-table" id="scrollableTableSupply" data-table-name="Suppliers">
+                    <form action="/add-supplier-s" method="post">
+                        <table class="ui celled table">
+                            <thead>
+                                <tr>
+                                    <% if (allSupplierInfo.length > 0) { %>
+                                        <% Object.keys(allSupplierInfo[0]).forEach(function(key) { %>
+                                            <th><%= key %></th>
+                                        <% }); %>
+                                    <% } %>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% allSupplierInfo.forEach(function(supplyr) { %>
+                                    <tr>
+                                        <% Object.values(supplyr).forEach(function(value) { %>
+                                            <td><%= value %></td>
+                                        <% }); %>
+                                    </tr>
+                                <% }); %>
+
+                                <!-- Form Inputs -->
+                                <tr>
+                                    <% var first = true; %>
+                                    <% Object.keys(allSupplierInfo[0]).forEach(function(key) { %>
+                                        <% if (first) { %>
+                                            <td><button type="submit" class="ui button">Submit</button></td>
+                                            <% first = false; %>
+                                        <% } else { %>
+                                            <td><input type="text" class="form-input" name="<%= key %>" placeholder="<%= key %>"></td>
+                                        <% } %>
+                                    <% }); %>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+                <div class="sql-queries" id="sqlQueriesscrollableTableSupply" style="display: none;">
+                    <div class="ui segment"><strong><pre><%= getQueries.QUERY_GET_ALL_SUPPLIERS %></pre></strong></div>
+                    <div class="ui segment"><strong><pre><%= postQueries.QUERY_POST_NEW_SUPPLIER%></pre></strong></div>
+                </div>
+                <button class="ui button showSqlButton" data-target="scrollableTableSupply">Show SQL</button>
+
+                <h1>Reorders Table:</h1>
+                <div class="scrollable-table" id="scrollableTableReorder" data-table-name="Reorders">
+                    <form action="/add-reorders-s" method="post">
+                        <table class="ui celled table">
+                            <thead>
+                                <tr>
+                                    <% if (getAllReorders.length > 0) { %>
+                                        <% Object.keys(getAllReorders[0]).forEach(function(key) { %>
+                                            <th><%= key %></th>
+                                        <% }); %>
+                                    <% } %>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% getAllReorders.forEach(function(reorder) { %>
+                                    <tr>
+                                        <% Object.values(reorder).forEach(function(value) { %>
+                                            <td><%= value %></td>
+                                        <% }); %>
+                                    </tr>
+                                <% }); %>
+
+                                <!-- Form Inputs -->
+                                <tr>
+                                    <% var first = true; %>
+                                    <% Object.keys(getAllReorders[0]).forEach(function(key) { %>
+                                        <% if (first) { %>
+                                            <td><button type="submit" class="ui button">Submit</button></td>
+                                            <% first = false; %>
+                                        <% } else { %>
+                                            <td><input type="text" class="form-input" name="<%= key %>" placeholder="<%= key %>"></td>
+                                        <% } %>
+                                    <% }); %>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+                <div class="sql-queries" id="sqlQueriesscrollableTableReorder" style="display: none;">
+                    <div class="ui segment"><strong><pre><%= getQueries.QUERY_GET_ALL_REORDERS %></pre></strong></div>
+                    <div class="ui segment"><strong><pre><%= postQueries.QUERY_POST_NEW_REORDER %></pre></strong></div>
+                </div>
+                <button class="ui button showSqlButton" data-target="scrollableTableReorder">Show SQL</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+<footer>
+<%-include('./partials/footer');%>
+</footer>

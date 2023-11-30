@@ -1,0 +1,76 @@
+/* // first line */
+@import url('https://fonts.googleapis.com/css?family=Righteous&display=swap');
+
+/* // after body element, add the code below. It means the ID #fonts in body element will apply this specific style. */
+body #fonts {
+font-family: 'Righteous', sans-serif;
+font-size: 2.5em;
+}
+
+/* Link the background img to the body 
+from "../img/LogisticsStockImg.png"
+*/
+body{
+
+
+    /* Set rules to fill background */
+    width: 100%;
+    align-items : center;
+    height: 100%;
+     
+
+    /* Background image is centered vertically and horizontally at all times */
+    background-position: center center;
+
+    /* Background image doesn't tile */
+    background-repeat: no-repeat;
+
+    /* Background image is fixed in the viewport so that it doesn't move when 
+    the content's height is greater than the image's height */
+    background-attachment: fixed;
+
+    /* Make the background img a bit transparent */
+    
+
+    /* This is what makes the background image rescale based
+    on the container's size */
+    background-size: 100% 100%;
+
+    /* Set a background color that will be displayed
+    while the background image is loading */
+    background-color: green;
+    overflow: auto;
+
+    /* Location of the image */
+    background-image:url('/img/LogisticsStockImg2.png') ;
+}  
+#container{
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 2%;
+    height: 420px;
+}
+
+.scrollable-table {
+    overflow-y: auto;
+    max-height: 450px; 
+}
+
+.scrollable-table .form-input {
+    width: 100%; /* Make input take full width of the cell */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    margin: 0; /* Remove default margins */
+    padding: 5px; /* Add some padding */
+    border: 1px solid #ddd; /* Optional: style the border */
+}
+
+.ui.button {
+    margin: 2%;
+}
+
+tr:hover{
+    background-color: #e4e4e4;
+}
+
+#deleteRow:hover{
+    background-color: #e4e4e4;
+}

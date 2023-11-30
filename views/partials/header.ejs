@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <title>Wholesale Management System</title>
+
+   <!-- CSS link (loading Semantic UI from a CDN) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css" integrity="sha512-8bHTC73gkZ7rZ7vpqUQThUDhqcNFyYi2xgDgPDHc+GXVGHXq+xPjynxIopALmOPqzo9JZj0k6OqqewdGO3EsrQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+     <!-- link local css sheet-->
+  <link rel="stylesheet" href="/css/style.css">
+   <style>
+     body { padding:15px 50px 50px 50px; }
+   </style>
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="container">
+<header>
+    <div style="text-align:center">
+      <h1 class="ui header" id="fonts">Wholesale Management System</h1>
+    </div>
+   <div class="ui inverted menu">
+      <a class="item" href="/">
+        Home
+      </a>
+      <a class="item" href="/StockDetails">
+        Stock Details
+      </a>
+      <!--    
+        Stock Details
+        Reorders and Inventory Checks
+        Supplier Information
+        Customer Relations
+      -->
+      <a class="item" href="/CustomerRelations">
+        Customer Relations
+      </a>
+      <!--
+        Customer Relations
+        Customer Details
+        Order Fulfillment
+        Defaulters Management
+      -->
+      <a class="item" href="/Financials">
+        Financials
+      </a>
+      <!--
+        Financials
+        Accounts Payable
+        Accounts Receivable
+        Profit Analysis
+      -->
+      <a class="item" href="/Reports">
+        Reports and Analytics
+      </a>
+      <!--
+        Reports and Analytics
+        Sales Reports
+        Inventory Reports
+        Financial Reports
+      -->
+      <a class="item" href="/UserManage">
+        User Management
+      </a>
+      <!--
+        User Management
+        Authentication
+        User Roles and Permissions
+      -->
+   </div>
+
+<!--
+Stock Details:
+This category involves managing inventory, stock details, and related operations.
+Stock
+Suppliers
+Inventory (Inventory Management)
+Reorders
+
+Customer Relations:
+These tables deal with customer information, customer-related financial transactions, and customer defaulters.
+Customers
+Defaulters
+AccountsReceivable
+FulfillmentDate (as it relates to customer order fulfillment)
+
+Financials:
+This section focuses on the financial aspects of the business, such as payables, receivables, and overall financial transactions.
+AccountsPayable
+AccountsReceivable (also relevant to Customer Relations)
+Defaulters (also relevant to Customer Relations)
+ProfitFulfillment (for tracking profit)
+
+Reports and Analytics:
+Tables that are primarily used for generating reports and analyzing business performance.
+ProfitFulfillment (as it provides data for profit analysis)
+Reorders (useful for inventory turnover and order frequency analysis)
+Additional tables might be required specifically for analytics purposes, depending on the type of reports and analytics needed.
+-->
+</header>

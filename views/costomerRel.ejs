@@ -1,0 +1,223 @@
+<%-include('./partials/header');%>
+<!--<main>
+
+    Customer Relations
+    Customer Details
+    Order Fulfillment
+    Defaulters Management
+                allCustomerInfo: allCustomerInfo,
+            allDefaulterInfo: allDefaulterInfo,
+            allAccountsReceivable: allAccountsReceivable,
+            allFulfillmentDate: allFulfillmentDate
+
+    <div class="ui segment" style="text-align:center">
+        <h1>Customer Relations</h1>
+    </div>
+    <div class="ui grid segment ">
+        <div class="segment eight wide column">
+            <h1>Customers:</h1>
+            <h2>Outstanding Receivables:</h2>
+            <h2>Order Fulfillment:</h2>
+        </div>
+        <div class="segment eight wide column">
+            <h1>Defaulters:</h1>
+        </div>
+    </div>
+</main>
+-->
+<main>
+    <div class="ui segment" style="text-align:center">
+        <h1>Customer Relations</h1>
+    </div>
+
+    <div class="ui grid segment ">
+        <!-- Customers Table -->
+        <div class="segment eight wide column">
+            <div class="scrollable-table">
+                <h1>Customer Table:</h1>
+                <div class="scrollable-table" id="scrollableTableCustomers" data-table-name="customers">
+                    <form action="/add-customer-c" method="post">
+                        <table class="ui celled table">
+                            <thead>
+                                <tr>
+                                    <% if (allCustomerInfo.length > 0) { %>
+                                        <% Object.keys(allCustomerInfo[0]).forEach(function(key) { %>
+                                            <th><%= key %></th>
+                                        <% }); %>
+                                    <% } %>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% allCustomerInfo.forEach(function(ci) { %>
+                                    <tr>
+                                        <% Object.values(ci).forEach(function(value) { %>
+                                            <td><%= value %></td>
+                                        <% }); %>
+                                    </tr>
+                                <% }); %>
+
+                                <!-- Form Inputs -->
+                                <tr>
+                                    <% var first = true; %>
+                                    <% Object.keys(allCustomerInfo[0]).forEach(function(key) { %>
+                                        <% if (first) { %>
+                                            <td><button type="submit" class="ui button">Submit</button></td>
+                                            <% first = false; %>
+                                        <% } else { %>
+                                            <td><input type="text" class="form-input" name="<%= key %>" placeholder="<%= key %>"></td>
+                                        <% } %>
+                                    <% }); %>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+                <div class="sql-queries" id="sqlQueriesscrollableTableCustomers" style="display: none;">
+                    <div class="ui segment"><strong><pre><%= getQueries.QUERY_GET_ALL_CUSTOMERS %></pre></strong></div>
+                    <div class="ui segment"><strong><pre><%= postQueries.QUERY_POST_NEW_CUSTOMER %></pre></strong></div>
+                </div>
+                <button class="ui button showSqlButton" data-target="scrollableTableCustomers">Show SQL</button>
+
+                <h2>Outstanding Receivables Table:</h2>
+                <div class="scrollable-table" id="scrollableTableAR" data-table-name="accountsreceivable">
+                    <form action="/add-receivables-c" method="post">
+                        <table class="ui celled table">
+                            <thead>
+                                <tr>
+                                    <% if (allAccountsReceivable.length > 0) { %>
+                                        <% Object.keys(allAccountsReceivable[0]).forEach(function(key) { %>
+                                            <th><%= key %></th>
+                                        <% }); %>
+                                    <% } %>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% allAccountsReceivable.forEach(function(receivable) { %>
+                                    <tr>
+                                        <% Object.values(receivable).forEach(function(value) { %>
+                                            <td><%= value %></td>
+                                        <% }); %>
+                                    </tr>
+                                <% }); %>
+
+                                <!-- Form Inputs -->
+                                <tr>
+                                    <% var first = true; %>
+                                    <% Object.keys(allAccountsReceivable[0]).forEach(function(key) { %>
+                                        <% if (first) { %>
+                                            <td><button type="submit" class="ui button">Submit</button></td>
+                                            <% first = false; %>
+                                        <% } else { %>
+                                            <td><input type="text" class="form-input" name="<%= key %>" placeholder="<%= key %>"></td>
+                                        <% } %>
+                                    <% }); %>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+                <div class="sql-queries" id="sqlQueriesscrollableTableAR" style="display: none;">
+                    <div class="ui segment"><strong><pre><%= getQueries.QUERY_GET_ALL_ACCOUNTS_RECEIVABLE %></pre></strong></div>
+                    <div class="ui segment"><strong><pre><%= postQueries.QUERY_POST_NEW_ACCOUNTS_RECEIVABLE %></pre></strong></div>
+                </div>
+                <button class="ui button showSqlButton" data-target="scrollableTableAR">Show SQL</button>
+
+                <h2>Order Fulfillment Table:</h2>
+                <div class="scrollable-table" id="scrollableTableOF" data-table-name="fulfillmentdate">
+                    <form action="/add-fulfillmentDate-c" method="post">
+                        <table class="ui celled table">
+                            <thead>
+                                <tr>
+                                    <% if (allFulfillmentDate.length > 0) { %>
+                                        <% Object.keys(allFulfillmentDate[0]).forEach(function(key) { %>
+                                            <th><%= key %></th>
+                                        <% }); %>
+                                    <% } %>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% allFulfillmentDate.forEach(function(fulfillment) { %>
+                                    <tr>
+                                        <% Object.values(fulfillment).forEach(function(value) { %>
+                                            <td><%= value %></td>
+                                        <% }); %>
+                                    </tr>
+                                <% }); %>
+
+                                <!-- Form Inputs -->
+                                <tr>
+                                    <% var first = true; %>
+                                    <% Object.keys(allFulfillmentDate[0]).forEach(function(key) { %>
+                                        <% if (first) { %>
+                                            <td><button type="submit" class="ui button">Submit</button></td>
+                                            <% first = false; %>
+                                        <% } else { %>
+                                            <td><input type="text" class="form-input" name="<%= key %>" placeholder="<%= key %>"></td>
+                                        <% } %>
+                                    <% }); %>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+                <div class="sql-queries" id="sqlQueriesscrollableTableOF" style="display: none;">
+                    <div class="ui segment"><strong><pre><%= getQueries.QUERY_GET_ALL_FULFILLMENT_DATES %></pre></strong></div>
+                    <div class="ui segment"><strong><pre><%= postQueries.QUERY_POST_NEW_FULFILLMENT_DATE %></pre></strong></div>
+                </div>
+                <button class="ui button showSqlButton" data-target="scrollableTableOF">Show SQL</button>
+            </div>
+        </div>
+
+        <!-- Defaulters Table -->
+        <div class="segment eight wide column">
+            <h1>Defaulters Table:</h1>
+            <div class="scrollable-table" id="scrollableTableDef" data-table-name="defaulters">
+                <form action="/add-defaulters-c" method="post">
+                    <table class="ui celled table">
+                        <thead>
+                            <tr>
+                                <% if (allDefaulterInfo.length > 0) { %>
+                                    <% Object.keys(allDefaulterInfo[0]).forEach(function(key) { %>
+                                        <th><%= key %></th>
+                                    <% }); %>
+                                <% } %>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% allDefaulterInfo.forEach(function(defaulter) { %>
+                                <tr>
+                                    <% Object.values(defaulter).forEach(function(value) { %>
+                                        <td><%= value %></td>
+                                    <% }); %>
+                                </tr>
+                            <% }); %>
+
+                            <!-- Form Inputs -->
+                            <tr>
+                                <% var first = true; %>
+                                <% Object.keys(allDefaulterInfo[0]).forEach(function(key) { %>
+                                    <% if (first) { %>
+                                        <td><button type="submit" class="ui button">Submit</button></td>
+                                        <% first = false; %>
+                                    <% } else { %>
+                                        <td><input type="text" class="form-input" name="<%= key %>" placeholder="<%= key %>"></td>
+                                    <% } %>
+                                <% }); %>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="sql-queries" id="sqlQueriesscrollableTableDef" style="display: none;">
+                <div class="ui segment"><strong><pre><%= getQueries.QUERY_GET_ALL_DEFAULTERS %></pre></strong></div>
+                <div class="ui segment"><strong><pre><%= postQueries.QUERY_POST_NEW_DEFAULTERS %></pre></strong></div>
+            </div>
+            <button class="ui button showSqlButton" data-target="scrollableTableDef">Show SQL</button>
+        </div>
+    </div>
+</main>
+
+
+<footer>
+<%-include('./partials/footer');%>
+</footer>

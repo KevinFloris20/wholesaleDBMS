@@ -1,0 +1,100 @@
+<%-include('./partials/header');%>
+<main>
+    <!--
+        Reports and Analytics
+        Sales Reports
+        Inventory Reports
+        Financial Reports
+            allProfitFulfillment: allProfitFulfillment,
+            allReorders: allReorders
+    -->
+    <div class="ui segment" style="text-align:center">
+        <h1>Reports and Analytics</h1>
+    </div>
+    <div class="ui grid segment">
+        <div class="segment eight wide column">
+            <h1>Financial Reports</h1>
+            <h1>Sales Reports</h1>
+            <h1>Inventory Reports</h1>
+
+            <div class="ui relaxed divided list">
+                <% orderInvReport.forEach(function(order) { %>
+                    <div class="item">
+                        <div class="content">
+                            <div class="header">Order ID: <%= order.OrderID %></div>
+                            <div class="description">
+                                Stock ID: <%= order.StockID %>,
+                                Required: <%= order.RequiredQuantity %>,
+                                Available: <%= order.AvailableQuantity %>
+                                <% if (order.QuantityDifference >= 0) { %>
+                                    <span class="ui green label">Fulfillable</span>
+                                <% } else { %>
+                                    <span class="ui red label">Not Fulfillable</span>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    </div>
+
+
+        <div class="segment eight wide column">
+            <div class="scrollable-table">
+                <h1>Inbound Profit data:</h1>
+                <div class="scrollable-table">
+                    <table class="ui celled table">
+                        <thead>
+                            <tr>
+                                <% if (allProfitFulfillment.length > 0) { %>
+                                    <% Object.keys(allProfitFulfillment[0]).forEach(function(key) { %>
+                                        <th><%= key %></th>
+                                    <% }); %>
+                                <% } %>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% allProfitFulfillment.forEach(function(profitIn) { %>
+                                <tr>
+                                    <% Object.values(profitIn).forEach(function(value) { %>
+                                        <td><%= value %></td>
+                                    <% }); %>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+                <h1>Reorder Data:</h1>
+                <div class="scrollable-table">
+                    <table class="ui celled table">
+                        <thead>
+                            <tr>
+                                <% if (allReorders.length > 0) { %>
+                                    <% Object.keys(allReorders[0]).forEach(function(key) { %>
+                                        <th><%= key %></th>
+                                    <% }); %>
+                                <% } %>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% allReorders.forEach(function(reorder) { %>
+                                <tr>
+                                    <% Object.values(reorder).forEach(function(value) { %>
+                                        <td><%= value %></td>
+                                    <% }); %>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+<footer>
+<%-include('./partials/footer');%>
+</footer>
