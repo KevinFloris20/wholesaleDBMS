@@ -24,30 +24,34 @@ const gdbConfig = {
     database: gdatabase
 };
 
-try{
-    const db = mysql.createConnection(dbConfig);
+let db;
+
+try {
+    db = mysql.createConnection(dbConfig);
     db.connect((err) => {
         if (err) {
-            console.log(err);
+            console.log('Local database connection error:', err);
         } else {
             console.log('Connected to local database');
         }
     });
-}catch(err){
-    console.log(err, "Trying google database");
-    try{
-        const db = mysql.createConnection(gdbConfig);
+} catch (err) {
+    console.log('Local database connection attempt failed:', err);
+    console.log("Trying google database");
+    try {
+        db = mysql.createConnection(gdbConfig);
         db.connect((err) => {
             if (err) {
-                console.log(err);
+                console.log('Google database connection error:', err);
             } else {
                 console.log('Connected to google database');
             }
         });
-    }catch(err){
-        console.log(err);
+    } catch (err) {
+        console.log('Google database connection attempt failed:', err);
     }
 }
+
 
 
 //Get Queries
