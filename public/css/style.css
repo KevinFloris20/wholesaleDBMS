@@ -38,7 +38,7 @@ body{
 
     /* Set a background color that will be displayed
     while the background image is loading */
-    background-color: green;
+    background-color: rgb(255, 255, 255);
     overflow: auto;
 
     /* Location of the image */
