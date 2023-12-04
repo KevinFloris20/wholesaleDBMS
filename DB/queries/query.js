@@ -26,69 +26,80 @@ const gdbConfig = {
 
 let db;
 
+// try {
+//     db = mysql.createConnection(dbConfig);
+//     db.connect((err) => {
+//         if (err) {
+//             console.log('Local database connection error:', err);
+//         } else {
+//             console.log('Connected to local database');
+//         }
+//     });
+// } catch (err) {
+//     console.log('Local database connection attempt failed:', err);
+//     console.log("Trying google database");
+//     try {
+//         db = mysql.createConnection(gdbConfig);
+//         db.connect((err) => {
+//             if (err) {
+//                 console.log('Google database connection error:', err);
+//             } else {
+//                 console.log('Connected to google database');
+//             }
+//         });
+//     } catch (err) {
+//         console.log('Google database connection attempt failed:', err);
+//     }
+// }
 try {
-    db = mysql.createConnection(dbConfig);
+    db = mysql.createConnection(gdbConfig);
     db.connect((err) => {
         if (err) {
-            console.log('Local database connection error:', err);
+            console.log('Google database connection error:', err);
         } else {
-            console.log('Connected to local database');
+            console.log('Connected to google database');
         }
     });
 } catch (err) {
-    console.log('Local database connection attempt failed:', err);
-    console.log("Trying google database");
-    try {
-        db = mysql.createConnection(gdbConfig);
-        db.connect((err) => {
-            if (err) {
-                console.log('Google database connection error:', err);
-            } else {
-                console.log('Connected to google database');
-            }
-        });
-    } catch (err) {
-        console.log('Google database connection attempt failed:', err);
-    }
+    console.log('Google database connection attempt failed:', err);
 }
 
 
-
 //Get Queries
-const QUERY_GET_ALL_SUPPLIERS = 'SELECT * FROM Suppliers;';
-const QUERY_GET_ALL_STOCK = 'SELECT * FROM Stock;';
-const QUERY_GET_ALL_CUSTOMERS = 'SELECT * FROM Customers;';
-const QUERY_GET_ALL_DEFAULTERS = 'SELECT * FROM Defaulters;';
-const QUERY_GET_ALL_INVENTORY = 'SELECT * FROM Inventory;';
-const QUERY_GET_ALL_REORDERS = 'SELECT * FROM Reorders;';
-const QUERY_GET_ALL_ACCOUNTS_PAYABLE = 'SELECT * FROM AccountsPayable;';
-const QUERY_GET_ALL_ACCOUNTS_RECEIVABLE = 'SELECT * FROM AccountsReceivable;';
-const QUERY_GET_ALL_PROFIT_FULFILLMENT = 'SELECT * FROM ProfitFulfillment;';
+const QUERY_GET_ALL_SUPPLIERS = 'SELECT * FROM suppliers;';
+const QUERY_GET_ALL_STOCK = 'SELECT * FROM stock;';
+const QUERY_GET_ALL_CUSTOMERS = 'SELECT * FROM customers;';
+const QUERY_GET_ALL_DEFAULTERS = 'SELECT * FROM defaulters;';
+const QUERY_GET_ALL_INVENTORY = 'SELECT * FROM inventory;';
+const QUERY_GET_ALL_REORDERS = 'SELECT * FROM reorders;';
+const QUERY_GET_ALL_ACCOUNTS_PAYABLE = 'SELECT * FROM accountspayable;';
+const QUERY_GET_ALL_ACCOUNTS_RECEIVABLE = 'SELECT * FROM accountsreceivable;';
+const QUERY_GET_ALL_PROFIT_FULFILLMENT = 'SELECT * FROM profitfulfillment;';
 const QUERY_GET_ALL_FULFILLMENT_DATES = 'SELECT * FROM fulfillmentdate;';
 
 //post queries
 //ProductName, Quantity, Price, SupplierID
-const QUERY_POST_NEW_STOCK = 'INSERT INTO Stock (ProductName, Quantity, Price, SupplierID) VALUES (?, ?, ?, ?);';
+const QUERY_POST_NEW_STOCK = 'INSERT INTO stock (ProductName, Quantity, Price, SupplierID) VALUES (?, ?, ?, ?);';
 //CustomerName, ContactInfo, Address
-const QUERY_POST_NEW_CUSTOMER = 'INSERT INTO Customers (CustomerName, ContactInfo, Address) VALUES (?, ?, ?);';
+const QUERY_POST_NEW_CUSTOMER = 'INSERT INTO customers (CustomerName, ContactInfo, Address) VALUES (?, ?, ?);';
 //StockID, CustomerID, RequiredQuantity, FulfillmentDate
-const QUERY_POST_NEW_FULFILLMENT_DATE = 'INSERT INTO FulfillmentDate (StockID, CustomerID, RequiredQuantity, FulfillmentDate, IsFulfilled) VALUES (?,?,?,?,?);';
+const QUERY_POST_NEW_FULFILLMENT_DATE = 'INSERT INTO fulfillmentDate (StockID, CustomerID, RequiredQuantity, FulfillmentDate, IsFulfilled) VALUES (?,?,?,?,?);';
 //CustomerID, Amount, DueDate
-const QUERY_POST_NEW_RECEIVABLES = 'INSERT INTO AccountsReceivable (CustomerID, Amount, DueDate) VALUES (?, ?, ?);';
+const QUERY_POST_NEW_RECEIVABLES = 'INSERT INTO accountsreceivable (CustomerID, Amount, DueDate) VALUES (?, ?, ?);';
 //CustomerID, Amountdue, DueDate
-const QUERY_POST_NEW_DEFAULTERS = 'INSERT INTO Defaulters (CustomerID, AmountDue, DueDate) VALUES (?, ?, ?);';
+const QUERY_POST_NEW_DEFAULTERS = 'INSERT INTO defaulters (CustomerID, AmountDue, DueDate) VALUES (?, ?, ?);';
 //StockID, Quantity, OrderDate, ExpectedDelivery
-const QUERY_POST_NEW_REORDER = 'INSERT INTO Reorders (StockID, Quantity, OrderDate, ExpectedDelivery) VALUES (?, ?, ?, ?);';
+const QUERY_POST_NEW_REORDER = 'INSERT INTO reorders (StockID, Quantity, OrderDate, ExpectedDelivery) VALUES (?, ?, ?, ?);';
 //SupplierName, ContactInfo, Address
-const QUERY_POST_NEW_SUPPLIER = 'INSERT INTO Suppliers (SupplierName, ContactInfo, Address) VALUES (?, ?, ?);';
+const QUERY_POST_NEW_SUPPLIER = 'INSERT INTO suppliers (SupplierName, ContactInfo, Address) VALUES (?, ?, ?);';
 //Date, TotalSales, TotalCost
-const QUERY_POST_NEW_PROFIT_FULFILLMENT = 'INSERT INTO ProfitFulfillment (Date, TotalSales, TotalCost) VALUES (?, ?, ?);';
+const QUERY_POST_NEW_PROFIT_FULFILLMENT = 'INSERT INTO profitfulfillment (Date, TotalSales, TotalCost) VALUES (?, ?, ?);';
 //SupplierID, Amount, DueDate
-const QUERY_POST_NEW_ACCOUNTS_PAYABLE = 'INSERT INTO AccountsPayable (SupplierID, Amount, DueDate) VALUES (?, ?, ?);';
+const QUERY_POST_NEW_ACCOUNTS_PAYABLE = 'INSERT INTO accountspayable (SupplierID, Amount, DueDate) VALUES (?, ?, ?);';
 //CustomerID, Amount, DueDate
-const QUERY_POST_NEW_ACCOUNTS_RECEIVABLE = 'INSERT INTO AccountsReceivable (CustomerID, Amount, DueDate) VALUES (?, ?, ?);';
+const QUERY_POST_NEW_ACCOUNTS_RECEIVABLE = 'INSERT INTO accountsreceivable (CustomerID, Amount, DueDate) VALUES (?, ?, ?);';
 //StockID, Quantity, LastUpdated
-const QUERY_POST_NEW_INVENTORY = 'INSERT INTO Inventory (StockID, Quantity, LastUpdated) VALUES (?, ?, ?);';
+const QUERY_POST_NEW_INVENTORY = 'INSERT INTO inventory (StockID, Quantity, LastUpdated) VALUES (?, ?, ?);';
 
 
 //report queries
