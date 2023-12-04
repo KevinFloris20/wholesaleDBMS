@@ -11,11 +11,18 @@ app.use(express.static("public"));
 const routes = require("./routes.js");
 app.use(routes);
 
-//lisissteen
-app.listen(8080, function () {
-  console.log("Server is running on port 8080 ");
+//check for 500
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
 });
 
+
+//lisissteen
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, function () {
+  console.log(`Server is running on port ${PORT}`);
+});
 // const express = require("express"),
 // app = express();
 
