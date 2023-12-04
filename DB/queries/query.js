@@ -13,14 +13,42 @@ const dbConfig = {
     password: password,
     database: database
 };
-const db = mysql.createConnection(dbConfig);
-db.connect((err) => {
-    if (err) {
+const ghost = process.env.GDB_HOST;
+const guser = process.env.GDB_USER;
+const gpassword = process.env.GDB_PASS;
+const gdatabase = process.env.GDB_NAME;
+const gdbConfig = {
+    host: ghost,
+    user: guser,
+    password: gpassword,
+    database: gdatabase
+};
+
+try{
+    const db = mysql.createConnection(dbConfig);
+    db.connect((err) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log('Connected to local database');
+        }
+    });
+}catch(err){
+    console.log(err, "Trying google database");
+    try{
+        const db = mysql.createConnection(gdbConfig);
+        db.connect((err) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log('Connected to google database');
+            }
+        });
+    }catch(err){
         console.log(err);
-    } else {
-        console.log('Connected to database');
     }
-});
+}
+
 
 //Get Queries
 const QUERY_GET_ALL_SUPPLIERS = 'SELECT * FROM Suppliers;';
