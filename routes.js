@@ -6,26 +6,38 @@ app.use(bodyParser.json());
 
 //route for index page
 app.get("/", async function (req, res) {
-    try{
-        const [products, c] = await Promise.all([
+    try {
+        const [products, customersData, replenishmentData] = await Promise.all([
             db.getDashProducts(),
-            db.getAllCustomers()
+            db.getAllCustomers(),
+            db.getDashInv()  // Fetching data for inventory replenishment
         ]);
 
-        //only select all customer names from the customer table
-        const customers = c.map((customer) => {
-            return customer.CustomerName;
+        // Only select all customer names from the customer table
+        const customers = customersData.map(customer => customer.CustomerName);
+
+        // Processing replenishment data
+        const replenishment = replenishmentData.map(item => {
+            return {
+                ProductName: item.ProductName,
+                SupplierName: item.SupplierName,
+                SupplierContact: item.SupplierContact,
+                NeedsReplenishment: item.NeedsReplenishment
+            };
         });
 
         res.render("index", {
             products: products,
-            customers: customers
+            customers: customers,
+            replenishment: replenishment  // Adding this for the EJS template
         });
-    }catch(err){
-        console.log(err);
-        res.render("index",{error: err})
+    } catch(err) {
+        console.error(err);
+        res.render("index", { error: err });
     }
 });
+
+
 
 
 
@@ -184,7 +196,42 @@ app.get("/doc", function(req, res){
     res.render("doc");
 });
 
-
+//DBQueries page
+app.get("/DBQueries", function(req, res) {
+    res.render("showDBQ", {
+        QUERY_GET_ALL_SUPPLIERS: db.QUERY_GET_ALL_SUPPLIERS,
+        QUERY_GET_ALL_STOCK: db.QUERY_GET_ALL_STOCK,
+        QUERY_GET_ALL_CUSTOMERS: db.QUERY_GET_ALL_CUSTOMERS,
+        QUERY_GET_ALL_DEFAULTERS: db.QUERY_GET_ALL_DEFAULTERS,
+        QUERY_GET_ALL_INVENTORY: db.QUERY_GET_ALL_INVENTORY,
+        QUERY_GET_ALL_REORDERS: db.QUERY_GET_ALL_REORDERS,
+        QUERY_GET_ALL_ACCOUNTS_PAYABLE: db.QUERY_GET_ALL_ACCOUNTS_PAYABLE,
+        QUERY_GET_ALL_ACCOUNTS_RECEIVABLE: db.QUERY_GET_ALL_ACCOUNTS_RECEIVABLE,
+        QUERY_GET_ALL_PROFIT_FULFILLMENT: db.QUERY_GET_ALL_PROFIT_FULFILLMENT,
+        QUERY_GET_ALL_FULFILLMENT_DATES: db.QUERY_GET_ALL_FULFILLMENT_DATES,
+        QUERY_POST_NEW_STOCK: db.QUERY_POST_NEW_STOCK,
+        QUERY_POST_NEW_CUSTOMER: db.QUERY_POST_NEW_CUSTOMER,
+        QUERY_POST_NEW_FULFILLMENT_DATE: db.QUERY_POST_NEW_FULFILLMENT_DATE,
+        QUERY_POST_NEW_RECEIVABLES: db.QUERY_POST_NEW_RECEIVABLES,
+        QUERY_POST_NEW_DEFAULTERS: db.QUERY_POST_NEW_DEFAULTERS,
+        QUERY_POST_NEW_REORDER: db.QUERY_POST_NEW_REORDER,
+        QUERY_POST_NEW_SUPPLIER: db.QUERY_POST_NEW_SUPPLIER,
+        QUERY_POST_NEW_PROFIT_FULFILLMENT: db.QUERY_POST_NEW_PROFIT_FULFILLMENT,
+        QUERY_POST_NEW_ACCOUNTS_PAYABLE: db.QUERY_POST_NEW_ACCOUNTS_PAYABLE,
+        QUERY_POST_NEW_ACCOUNTS_RECEIVABLE: db.QUERY_POST_NEW_ACCOUNTS_RECEIVABLE,
+        QUERY_POST_NEW_INVENTORY: db.QUERY_POST_NEW_INVENTORY,
+        QUERY_GET_TOTALUNITS_REPORT: db.QUERY_GET_TOTALUNITS_REPORT,
+        QUERY_GET_SUPPLIERWEIGHT_REPORT: db.QUERY_GET_SUPPLIERWEIGHT_REPORT,
+        QUERY_GET_TOTALACCOUNTSRECEIVABLE: db.QUERY_GET_TOTALACCOUNTSRECEIVABLE,
+        QUERY_GET_TOTALACCOUNTSPAYABLE: db.QUERY_GET_TOTALACCOUNTSPAYABLE,
+        QUERY_GET_NETACCOUNTS: db.QUERY_GET_NETACCOUNTS,
+        QUERY_GET_TOTALPROFITFUFIL: db.QUERY_GET_TOTALPROFITFUFIL,
+        QUERY_GET_RECIEVABLES_AND_DEFAULTERS: db.QUERY_GET_RECIEVABLES_AND_DEFAULTERS,
+        QUERY_GET_ORDER_INV_REPORT: db.QUERY_GET_ORDER_INV_REPORT,
+        QUERY_GET_DASH_PROD: db.QUERY_GET_DASH_PROD,
+        QUERY_GET_DASH_INVV: db.QUERY_GET_DASH_INVV
+    });
+});
 
 
 
@@ -472,6 +519,48 @@ app.post('/submit-dash-order', async (req, res) => {
         res.status(500).send('An error occurred');
     }
 });
+
+//for the dashboard - inventory replenishment /submit-replenishment-order
+app.post('/submit-replenishment-order', async (req, res) => {
+    try {
+        const { productName, supplierName, quantity, cost } = req.body;
+
+        // Fetch all stock and suppliers to find the matching ones
+        const allStock = await db.getAllStock();
+        const allSuppliers = await db.getAllSuppliers();
+
+        const stock = allStock.find(s => s.ProductName === productName);
+        const supplier = allSuppliers.find(s => s.SupplierName === supplierName);
+
+        if (!stock || !supplier) {
+            // Handle case where the stock item or supplier is not found
+            throw new Error("Stock item or supplier not found");
+        }
+
+        // Insert into reorders table
+        await db.postNewReorder([
+            stock.StockID,
+            quantity,
+            new Date().toISOString().slice(0, 10), // Current date for OrderDate
+            null // Assuming ExpectedDelivery is not known at this point
+        ]);
+
+        // Insert into accounts payable table
+        await db.postNewAccountsPayable([
+            supplier.SupplierID,
+            cost * quantity, // Assuming this is the total cost
+            new Date().toISOString().slice(0, 10) // Current date for DueDate
+        ]);
+
+        // Redirect or send a success response
+        res.redirect('/'); // redirect to the dashboard or another appropriate route
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('An error occurred');
+    }
+});
+
+
 
 
 

@@ -175,6 +175,28 @@ LEFT JOIN
 LEFT JOIN 
     reorders r ON s.StockID = r.StockID;
 `
+
+
+const QUERY_GET_DASH_INVV = `
+SELECT 
+    s.ProductName,
+    sup.SupplierName,
+    sup.ContactInfo AS SupplierContact,
+    CASE 
+        WHEN i.Quantity - IFNULL((SELECT SUM(fd.RequiredQuantity) 
+                                  FROM fulfillmentdate fd 
+                                  WHERE fd.StockID = s.StockID 
+                                  AND fd.IsFulfilled = FALSE), 0) <= 0 THEN 'Yes'
+        ELSE 'No'
+    END AS NeedsReplenishment
+FROM 
+    stock s
+LEFT JOIN 
+    suppliers sup ON s.SupplierID = sup.SupplierID
+LEFT JOIN 
+    inventory i ON s.StockID = i.StockID;
+
+`
 ////////////////////////Posts////////////////////////
 function postNewStock(newStockData) {
     console.log("Posting: "+newStockData);
@@ -466,6 +488,14 @@ function getDashProducts() {
         });
     });
 }
+function getDashInv(){
+    return new Promise((resolve, reject) => {
+        db.query(QUERY_GET_DASH_INVV, (err, results) => {
+            if (err) reject(err);
+            else resolve(results);
+        });
+    });
+}
 module.exports = {
     getAllSuppliers,
     getAllStock,
@@ -527,7 +557,9 @@ module.exports = {
     getOrderInvReport,
     QUERY_GET_ORDER_INV_REPORT,
     getDashProducts,
-    QUERY_GET_DASH_PROD
+    QUERY_GET_DASH_PROD,
+    getDashInv,
+    QUERY_GET_DASH_INVV
 };
 
 
