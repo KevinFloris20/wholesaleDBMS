@@ -179,6 +179,11 @@ app.get("/UserManage", function(req, res){
     res.render("userManage");
 });
 
+//Documentation page
+app.get("/doc", function(req, res){
+    res.render("doc");
+});
+
 
 
 
