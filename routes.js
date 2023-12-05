@@ -4,6 +4,113 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+const DBschema = `
+DROP DATABASE IF EXISTS WholesalerDB;
+CREATE DATABASE WholesalerDB;
+USE WholesalerDB;
+
+CREATE TABLE suppliers (
+    SupplierID INT AUTO_INCREMENT PRIMARY KEY,
+    SupplierName VARCHAR(255) NOT NULL,
+    ContactInfo VARCHAR(255),
+    Address VARCHAR(255)
+);
+
+CREATE TABLE stock (
+    StockID INT AUTO_INCREMENT PRIMARY KEY,
+    ProductName VARCHAR(255) NOT NULL,
+    Quantity INT NOT NULL,
+    Price DECIMAL(10, 2) NOT NULL,
+    SupplierID INT,
+    CONSTRAINT fk_stock_supplier FOREIGN KEY (SupplierID) REFERENCES suppliers(SupplierID) ON DELETE SET NULL
+);
+
+CREATE TABLE customers (
+    CustomerID INT AUTO_INCREMENT PRIMARY KEY,
+    CustomerName VARCHAR(255) NOT NULL,
+    ContactInfo VARCHAR(255),
+    Address VARCHAR(255)
+);
+
+CREATE TABLE defaulters (
+    DefaulterID INT AUTO_INCREMENT PRIMARY KEY,
+    CustomerID INT,
+    AmountDue DECIMAL(10, 2) NOT NULL,
+    DueDate DATE NOT NULL,
+    CONSTRAINT fk_defaulters_customer FOREIGN KEY (CustomerID) REFERENCES customers(CustomerID) ON DELETE SET NULL
+);
+
+CREATE TABLE inventory (
+    InventoryID INT AUTO_INCREMENT PRIMARY KEY,
+    StockID INT,
+    Quantity INT NOT NULL,
+    LastUpdated DATE NOT NULL,
+    CONSTRAINT fk_inventory_stock FOREIGN KEY (StockID) REFERENCES stock(StockID) ON DELETE SET NULL
+);
+
+CREATE TABLE reorders (
+    ReorderID INT AUTO_INCREMENT PRIMARY KEY,
+    StockID INT,
+    Quantity INT NOT NULL,
+    OrderDate DATE NOT NULL,
+    ExpectedDelivery DATE,
+    CONSTRAINT fk_reorders_stock FOREIGN KEY (StockID) REFERENCES stock(StockID) ON DELETE SET NULL
+);
+
+CREATE TABLE accountspayable (
+    AccountID INT AUTO_INCREMENT PRIMARY KEY,
+    SupplierID INT,
+    Amount DECIMAL(10, 2) NOT NULL,
+    DueDate DATE NOT NULL,
+    CONSTRAINT fk_accountspayable_supplier FOREIGN KEY (SupplierID) REFERENCES suppliers(SupplierID) ON DELETE SET NULL
+);
+
+CREATE TABLE accountsreceivable (
+    AccountID INT AUTO_INCREMENT PRIMARY KEY,
+    CustomerID INT,
+    Amount DECIMAL(10, 2) NOT NULL,
+    DueDate DATE NOT NULL,
+    CONSTRAINT fk_accountsreceivable_customer FOREIGN KEY (CustomerID) REFERENCES customers(CustomerID) ON DELETE SET NULL
+);
+
+CREATE TABLE profitfulfillment (
+    RecordID INT AUTO_INCREMENT PRIMARY KEY,
+    Date DATE NOT NULL,
+    TotalSales DECIMAL(10, 2) NOT NULL,
+    TotalCost DECIMAL(10, 2) NOT NULL,
+    Profit DECIMAL(10, 2) GENERATED ALWAYS AS (TotalSales - TotalCost) STORED
+);
+
+CREATE TABLE fulfillmentdate(
+    OrderID INT AUTO_INCREMENT PRIMARY KEY,
+    StockID INT,
+    CustomerID INT,
+    RequiredQuantity INT NOT NULL,
+    FulfillmentDate DATE,
+    IsFulfilled BOOLEAN,
+    CONSTRAINT fk_fulfillmentdate_stock FOREIGN KEY (StockID) REFERENCES stock(StockID) ON DELETE SET NULL,
+    CONSTRAINT fk_fulfillmentdate_customer FOREIGN KEY (CustomerID) REFERENCES customers(CustomerID) ON DELETE SET NULL
+);
+
+
+DELIMITER $$
+
+CREATE TRIGGER before_insert_fulfillmentdate
+BEFORE INSERT ON fulfillmentdate
+FOR EACH ROW
+BEGIN
+    IF NEW.IsFulfilled IS NULL THEN
+        IF NEW.FulfillmentDate < CURDATE() THEN
+            SET NEW.IsFulfilled = TRUE;
+        ELSE
+            SET NEW.IsFulfilled = FALSE;
+        END IF;
+    END IF;
+END$$
+
+DELIMITER ;
+`
+
 //route for index page
 app.get("/", async function (req, res) {
     try {
@@ -229,7 +336,8 @@ app.get("/DBQueries", function(req, res) {
         QUERY_GET_RECIEVABLES_AND_DEFAULTERS: db.QUERY_GET_RECIEVABLES_AND_DEFAULTERS,
         QUERY_GET_ORDER_INV_REPORT: db.QUERY_GET_ORDER_INV_REPORT,
         QUERY_GET_DASH_PROD: db.QUERY_GET_DASH_PROD,
-        QUERY_GET_DASH_INVV: db.QUERY_GET_DASH_INVV
+        QUERY_GET_DASH_INVV: db.QUERY_GET_DASH_INVV,
+        Schema: DBschema
     });
 });
 

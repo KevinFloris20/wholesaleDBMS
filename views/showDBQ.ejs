@@ -1,8 +1,7 @@
 <%-include('./partials/header');%>
 <main>
-<div class="ui segment"><h2>All Database Queries:</h2></div>
-<div class="ui container">
-
+    <div class="ui segment"><h2>All Database Queries:</h2></div>
+    <div class="ui container">
         <% function renderQuerySegment(queryName, query) { %>
             <div class="ui raised segment">
                 <h3><%= queryName %></h3>
@@ -41,7 +40,12 @@
         <% renderQuerySegment("Get Order Inventory Report", QUERY_GET_ORDER_INV_REPORT) %>
         <% renderQuerySegment("Get Dashboard Products", QUERY_GET_DASH_PROD) %>
         <% renderQuerySegment("Get Dashboard Inventory", QUERY_GET_DASH_INVV) %>
+        <div class="ui raised segment">
+            <h3>DB Schema</h3>
+            <div class="ui segment"><strong><pre><%= Schema %></pre><strong></div>
+        </div>
     </div>
+
 </main>
 
 
