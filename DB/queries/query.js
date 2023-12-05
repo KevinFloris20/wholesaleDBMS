@@ -83,7 +83,7 @@ const QUERY_POST_NEW_STOCK = 'INSERT INTO stock (ProductName, Quantity, Price, S
 //CustomerName, ContactInfo, Address
 const QUERY_POST_NEW_CUSTOMER = 'INSERT INTO customers (CustomerName, ContactInfo, Address) VALUES (?, ?, ?);';
 //StockID, CustomerID, RequiredQuantity, FulfillmentDate
-const QUERY_POST_NEW_FULFILLMENT_DATE = 'INSERT INTO fulfillmentDate (StockID, CustomerID, RequiredQuantity, FulfillmentDate, IsFulfilled) VALUES (?,?,?,?,?);';
+const QUERY_POST_NEW_FULFILLMENT_DATE = 'INSERT INTO fulfillmentdate (StockID, CustomerID, RequiredQuantity, FulfillmentDate, IsFulfilled) VALUES (?,?,?,?,?);';
 //CustomerID, Amount, DueDate
 const QUERY_POST_NEW_RECEIVABLES = 'INSERT INTO accountsreceivable (CustomerID, Amount, DueDate) VALUES (?, ?, ?);';
 //CustomerID, Amountdue, DueDate
@@ -153,6 +153,27 @@ FROM
     fulfillmentdate fd
 JOIN 
     inventory inv ON fd.StockID = inv.StockID;
+`
+
+const QUERY_GET_DASH_PROD = `
+SELECT 
+    s.ProductName,
+    s.Price,
+    i.Quantity AS InventoryQuantity,
+    sup.SupplierName,
+    sup.ContactInfo AS SupplierContact,
+    sup.Address AS SupplierAddress,
+    r.Quantity AS ReorderQuantity,
+    r.OrderDate AS ReorderDate,
+    r.ExpectedDelivery AS ReorderExpectedDelivery
+FROM 
+    stock s
+LEFT JOIN 
+    inventory i ON s.StockID = i.StockID
+LEFT JOIN 
+    suppliers sup ON s.SupplierID = sup.SupplierID
+LEFT JOIN 
+    reorders r ON s.StockID = r.StockID;
 `
 ////////////////////////Posts////////////////////////
 function postNewStock(newStockData) {
@@ -437,6 +458,14 @@ function getOrderInvReport() {
         });
     });
 }
+function getDashProducts() {
+    return new Promise((resolve, reject) => {
+        db.query(QUERY_GET_DASH_PROD, (err, results) => {
+            if (err) reject(err);
+            else resolve(results);
+        });
+    });
+}
 module.exports = {
     getAllSuppliers,
     getAllStock,
@@ -496,8 +525,9 @@ module.exports = {
     getRecievablesAndDefaulters,
     QUERY_GET_RECIEVABLES_AND_DEFAULTERS,
     getOrderInvReport,
-    QUERY_GET_ORDER_INV_REPORT
-    
+    QUERY_GET_ORDER_INV_REPORT,
+    getDashProducts,
+    QUERY_GET_DASH_PROD
 };
 
 

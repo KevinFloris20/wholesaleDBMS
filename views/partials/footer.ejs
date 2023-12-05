@@ -6,110 +6,110 @@
 
 <script>
 
-
-function createBarChartTable1(data) {
-    const chartLoc = document.getElementById('myChart');
-    // chartLoc.style.height = '50px';
-    // chartLoc.style.width = '80px';
-    const ctx = chartLoc.getContext('2d');
-    const chart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: data.map(item => item.ProductName),
-            datasets: [{
-                label: 'Inventory Level',
-                data: data.map(item => item.TotalUnits),
-                backgroundColor: 'rgba(0, 123, 255, 0.5)',
-                borderColor: 'rgba(0, 123, 255, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
+    function createBarChartTable1(data) {
+        const chartLoc = document.getElementById('myChart');
+        // chartLoc.style.height = '50px';
+        // chartLoc.style.width = '80px';
+        const ctx = chartLoc.getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: data.map(item => item.ProductName),
+                datasets: [{
+                    label: 'Inventory Level',
+                    data: data.map(item => item.TotalUnits),
+                    backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                    borderColor: 'rgba(0, 123, 255, 1)',
+                    borderWidth: 1
+                }]
             },
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
                 },
-                title: {
-                    display: true,
-                    text: 'Inventory Levels Per Unit'
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    title: {
+                        display: true,
+                        text: 'Inventory Levels Per Unit'
+                    }
                 }
             }
-        }
-    });
-}
+        });
+    }
 
-function createPieChart1(data) {
-    const ctx = document.getElementById('myPieChart').getContext('2d');
-    const chart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: data.map(item => item.SupplierName),
-            datasets: [{
-                label: 'Supplier Contribution',
-                data: data.map(item => item.ProductCount),
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Weighted Supplier Stock Contribution'
-                }
-            }
-        }
-    });
-}
-
-function createBarChartTable2(data) {
-    const ctx = document.getElementById('myChart2').getContext('2d');
-    const chart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: data.map(item => item.CustomerName),
-            datasets: [{
-                label: 'Accounts Receivable',
-                data: data.map(item => item.TotalReceivable),
-                backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
-            }, {
-                label: 'Defaulted Amount',
-                data: data.map(item => item.TotalDefaulted),
-                backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
+    function createPieChart1(data) {
+        const ctx = document.getElementById('myPieChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: data.map(item => item.SupplierName),
+                datasets: [{
+                    label: 'Supplier Contribution',
+                    data: data.map(item => item.ProductCount),
+                    borderWidth: 1
+                }]
             },
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: true,
-                },
-                title: {
-                    display: true,
-                    text: 'Customer Receivables and Defaults'
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Weighted Supplier Stock Contribution'
+                    }
                 }
             }
-        }
-    });
-}
+        });
+    }
+
+    function createBarChartTable2(data) {
+        const ctx = document.getElementById('myChart2').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: data.map(item => item.CustomerName),
+                datasets: [{
+                    label: 'Accounts Receivable',
+                    data: data.map(item => item.TotalReceivable),
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Defaulted Amount',
+                    data: data.map(item => item.TotalDefaulted),
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                    },
+                    title: {
+                        display: true,
+                        text: 'Customer Receivables and Defaults'
+                    }
+                }
+            }
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
 
         //show table1
@@ -134,7 +134,7 @@ function createBarChartTable2(data) {
                 createBarChartTable2(data);
             }).catch(error => console.error('Error:', error));
 
-
+        //for the show sql button
         document.querySelectorAll('.showSqlButton').forEach(button => {
             button.addEventListener('click', function() {
                 var targetId = this.getAttribute('data-target');
@@ -153,7 +153,6 @@ function createBarChartTable2(data) {
             });
         });
 
-
         //for the new contextmenu
         var contextMenu = document.createElement("div");
         contextMenu.innerHTML = "<div><button class='ui segment' id='deleteRow'>Delete Row</button></div>";
@@ -161,7 +160,7 @@ function createBarChartTable2(data) {
         contextMenu.style.position = "absolute";
         document.body.appendChild(contextMenu);
 
-    // Right-click on any table row
+        // Right-click on any table row
         document.querySelectorAll('.ui.celled.table tbody tr').forEach(row => {
             row.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
@@ -226,6 +225,41 @@ function createBarChartTable2(data) {
                 contextMenu.style.display = "none";
             }
         });
+
+        //for the dashbord and the customer list
+        document.getElementById('customerSelect').addEventListener('change', function() {
+            var newCustomerFields = document.getElementById('newCustomerFields');
+            if (this.value === 'new') {
+                newCustomerFields.style.display = 'block';
+            } else {
+                newCustomerFields.style.display = 'none';
+            }
+        });
+
+        //dashboard tabbing
+        var menuItems = document.querySelectorAll('.menu .item');
+        var tabSegments = document.querySelectorAll('.tab.segment');
+
+        menuItems.forEach(function(tab) {
+            if(tab.id === 'dash'){
+                tab.addEventListener('click', function(event) {
+                    // Prevent default link behavior
+                    event.preventDefault();
+
+                    // Get the data-tab attribute of the clicked tab
+                    var activeTab = this.getAttribute('data-tab');
+
+                    // Remove 'active' class from all menu items and tab segments
+                    menuItems.forEach(item => item.classList.remove('active'));
+                    tabSegments.forEach(segment => segment.classList.remove('active'));
+
+                    // Add 'active' class to the clicked tab and its corresponding content
+                    this.classList.add('active');
+                    document.querySelector('.tab.segment[data-tab="' + activeTab + '"]').classList.add('active');
+                });
+            }
+        });
+       
 
 
     });

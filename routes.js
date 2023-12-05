@@ -5,23 +5,30 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 //route for index page
-app.get("/", function (req, res) {
-    res.render("index");
+app.get("/", async function (req, res) {
+    try{
+        const [products, c] = await Promise.all([
+            db.getDashProducts(),
+            db.getAllCustomers()
+        ]);
+
+        //only select all customer names from the customer table
+        const customers = c.map((customer) => {
+            return customer.CustomerName;
+        });
+
+        res.render("index", {
+            products: products,
+            customers: customers
+        });
+    }catch(err){
+        console.log(err);
+        res.render("index",{error: err})
+    }
 });
 
 
 
-//   getAllSuppliers,
-//   getAllStock,
-//   getAllCustomers,
-//   getAllDefaulters,
-//   getAllInventory,
-//   getAllReorders,
-//   getAllAccountsPayable,
-//   getAllAccountsReceivable,
-//   getAllProfitFulfillment,
-//   getAllFulfillmentDates
-  
 //require the db queries
 const db = require("./DB/queries/query.js");
 
@@ -402,6 +409,66 @@ app.post('/delete-row', async (req, res) => {
     }
 });
 
+//for the dashboard
+app.post('/submit-dash-order', async (req, res) => {
+    try {
+        const { 
+            productName, amount, fulfillmentDate, customer, 
+            newCustomerName, newCustomerAddress, newCustomerContact 
+        } = req.body;
+
+        let customerId;
+
+        //check if a new customer is being added
+        if (customer === 'new') {
+            const c = await db.postNewCustomer([
+                newCustomerName,
+                newCustomerContact,
+                newCustomerAddress
+            ]);
+            customerId = c.insertId;
+        } else {
+            const allCustomers = await db.getAllCustomers();
+            const existingCustomer = allCustomers.find(c => c.CustomerName === customer);
+            if (existingCustomer) {
+                customerId = existingCustomer.CustomerID;
+            } else {
+                throw new Error("Customer not found");
+            }
+        }
+        const allStock = await db.getAllStock();
+        const stock = allStock.find(s => s.ProductName === productName);
+        if (!stock) {
+            throw new Error("Stock item not found");
+        }
+        const stockId = stock.StockID;
+
+
+        await db.postNewfulfillmentDate([
+            stockId,
+            customerId,
+            amount,
+            fulfillmentDate,
+            false 
+        ]);
+
+
+        await db.postNewAccountsReceivable([
+            customerId,
+            stock.Price * amount,
+            fulfillmentDate
+        ]);
+
+        //additional logic one day...
+
+        res.redirect('/'); 
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('An error occurred');
+    }
+});
+
+
 
 ////////////////////////Charts////////////////////////
 app.get('/inventory-chart', (req, res) => {
@@ -433,6 +500,7 @@ app.get('/rec-and-def-chart', (req, res) => {
             res.status(500).send('Error getting receivables and defaulters chart data');
         });
 });
+
 
 
 module.exports = app;
