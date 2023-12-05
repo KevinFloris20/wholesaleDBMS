@@ -1,10 +1,10 @@
 <%-include('./partials/header.ejs');%>
 <main>
-<div class="ui segment"><h1>Dashboard</h1></div>
+<div class="ui segment"style="text-align:center"><h1>Dashboard</h1></div>
     <div class="ui segment">
         <div class="ui segment"style="text-align:center"><h2>DB diagram</h2></div>
         <div class="container">
-            <img src="img/DBdiagram.png" alt="Database Snapshot">
+            <img style="width:100%" src="img/DBdiagram.png" alt="Database Snapshot">
         </div>
     </div>
 
@@ -87,7 +87,7 @@
         <div class="ui bottom attached tab segment" data-tab="second">
             <h2 class="ui header">Inventory Replenishment Order</h2>
 
-            <!-- Products Replenishment Table -->
+            <!--products Replenishment table -->
             <table class="ui celled table">
                 <thead>
                     <tr>
@@ -109,7 +109,7 @@
                 </tbody>
             </table>
 
-            <!-- Replenishment Order Form -->
+            <!--replenishment form-->
             <h3>Submit a Replenishment Order</h3>
             <form class="ui form" action="/submit-replenishment-order" method="post">
                 <div class="field">

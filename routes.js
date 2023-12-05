@@ -346,46 +346,33 @@ app.get("/DBQueries", function(req, res) {
 ////////////////////////Posts////////////////////////
 
 
-// Function to reformat the date to SQL acceptable format (yyyy-mm-dd)
 function reformatDate(dateStr) {
-    let parts = dateStr.match(/(\d+)/g);  // Extracts the date parts
+    let parts = dateStr.match(/(\d+)/g); 
 
-    // Basic validation to check if there are exactly three parts for month, day, year
     if (!parts || parts.length !== 3) {
-        return null; // Or some default date, as per your handling strategy
+        return null; 
     }
 
     let day, month, year;
 
     if (dateStr.includes('/')) {
-        // Check if format is DD/MM/YYYY or MM/DD/YYYY
-        // Assuming the first part is less than or equal to 12, treat it as month
         if (parseInt(parts[0]) <= 12) {
-            // Format is MM/DD/YYYY
             [month, day, year] = parts;
         } else {
-            // Format is DD/MM/YYYY
             [day, month, year] = parts;
         }
     } else if (dateStr.includes('-')) {
-        // Assuming format is YYYY-MM-DD or DD-MM-YYYY
         if (parts[0].length === 4) {
-            // Format is YYYY-MM-DD
             [year, month, day] = parts;
         } else {
-            // Format is DD-MM-YYYY
             [day, month, year] = parts;
         }
     } else {
-        // Handle other formats or set a default
-        return null; // Or some default date, as per your handling strategy
+        return null; 
     }
 
-    // Pad day and month with zero if they are single digit
     day = day.padStart(2, '0');
     month = month.padStart(2, '0');
-
-    // Reconstruct the date in YYYY-MM-DD format
     return `${year}-${month}-${day}`;
 }
 
@@ -633,7 +620,6 @@ app.post('/submit-replenishment-order', async (req, res) => {
     try {
         const { productName, supplierName, quantity, cost } = req.body;
 
-        // Fetch all stock and suppliers to find the matching ones
         const allStock = await db.getAllStock();
         const allSuppliers = await db.getAllSuppliers();
 
@@ -641,27 +627,22 @@ app.post('/submit-replenishment-order', async (req, res) => {
         const supplier = allSuppliers.find(s => s.SupplierName === supplierName);
 
         if (!stock || !supplier) {
-            // Handle case where the stock item or supplier is not found
             throw new Error("Stock item or supplier not found");
         }
-
-        // Insert into reorders table
         await db.postNewReorder([
             stock.StockID,
             quantity,
-            new Date().toISOString().slice(0, 10), // Current date for OrderDate
-            null // Assuming ExpectedDelivery is not known at this point
+            new Date().toISOString().slice(0, 10),
+            null
         ]);
 
-        // Insert into accounts payable table
         await db.postNewAccountsPayable([
             supplier.SupplierID,
-            cost * quantity, // Assuming this is the total cost
-            new Date().toISOString().slice(0, 10) // Current date for DueDate
+            cost * quantity, 
+            new Date().toISOString().slice(0, 10)
         ]);
 
-        // Redirect or send a success response
-        res.redirect('/'); // redirect to the dashboard or another appropriate route
+        res.redirect('/');
     } catch (error) {
         console.error(error);
         res.status(500).send('An error occurred');
