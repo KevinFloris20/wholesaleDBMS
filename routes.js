@@ -546,10 +546,10 @@ app.post('/delete-row', async (req, res) => {
     console.log("Deleting row: "+req.body);
     const deleteData = req.body; 
     deleteData.tableName = deleteData.tableName.replace(/'/g, "");
-    const values = [deleteData.tableName, deleteData.rowId, deleteData.columnName];
+    const values = [deleteData.tableName.toLowerCase(), deleteData.rowId.toLowerCase(), deleteData.columnName.toLowerCase()];
     try {
         await db.deleteRow(values);
-        res.redirect('/stockDetails');
+        res.redirect('back');
     } catch (error) {
         console.error('Error deleting row:', error);
         res.status(500).send('Error deleting row');
