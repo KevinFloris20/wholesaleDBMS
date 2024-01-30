@@ -2,6 +2,7 @@ const express = require("express"),
 app = express();
 
 //setting view engine to ejs
+// this is the live site at gcloud app deploy https://wholesaledbms.ue.r.appspot.com/
 app.set("view engine", "ejs");
 
 //add static files
