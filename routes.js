@@ -1,9 +1,11 @@
+//random app setup
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// Heres the db schema for the client for presentation purposes
 const DBschema = `
 DROP DATABASE IF EXISTS WholesalerDB;
 CREATE DATABASE WholesalerDB;
@@ -114,16 +116,13 @@ DELIMITER ;
 //route for index page
 app.get("/", async function (req, res) {
     try {
+        // this gets data from the database
         const [products, customersData, replenishmentData] = await Promise.all([
             db.getDashProducts(),
             db.getAllCustomers(),
-            db.getDashInv()  // Fetching data for inventory replenishment
+            db.getDashInv()  
         ]);
-
-        // Only select all customer names from the customer table
         const customers = customersData.map(customer => customer.CustomerName);
-
-        // Processing replenishment data
         const replenishment = replenishmentData.map(item => {
             return {
                 ProductName: item.ProductName,
@@ -136,7 +135,7 @@ app.get("/", async function (req, res) {
         res.render("index", {
             products: products,
             customers: customers,
-            replenishment: replenishment  // Adding this for the EJS template
+            replenishment: replenishment 
         });
     } catch(err) {
         console.error(err);
@@ -273,7 +272,7 @@ app.get("/Financials", async function(req, res){
 });
 
 //Reports page
-// ProfitFulfillment (as it provides data for profit analysis)
+// ProfitFulfillment
 // Reorders 
 app.get("/Reports", async function(req, res){
     try{
@@ -344,8 +343,6 @@ app.get("/DBQueries", function(req, res) {
 
 
 ////////////////////////Posts////////////////////////
-
-
 function reformatDate(dateStr) {
     let parts = dateStr.match(/(\d+)/g); 
 

@@ -1,10 +1,5 @@
-# Define the runtime environment
 runtime: nodejs18
-
-# Specify the entry point for the application
 entrypoint: node server.js
-
-# Handlers (this section might not be necessary for server-rendered apps)
 handlers:
   - url: /.*
     script: auto
