@@ -29,9 +29,9 @@
     <div class="ui segment" style="text-align:center">
         <h1>Customer Relations</h1>
     </div>
-
+    <!-- This is the customer page which displays Customer information, defaulters, Accounts receivable, and Fulfilment -->
     <div class="ui grid segment ">
-        <!-- Customers Table -->
+        <!-- left half of the page -->
         <div class="segment eight wide column">
             <div class="scrollable-table">
                 <h1>Customer Table:</h1>
@@ -55,8 +55,6 @@
                                         <% }); %>
                                     </tr>
                                 <% }); %>
-
-                                <!-- Form Inputs -->
                                 <tr>
                                     <% var first = true; %>
                                     <% Object.keys(allCustomerInfo[0]).forEach(function(key) { %>
@@ -99,8 +97,6 @@
                                         <% }); %>
                                     </tr>
                                 <% }); %>
-
-                                <!-- Form Inputs -->
                                 <tr>
                                     <% var first = true; %>
                                     <% Object.keys(allAccountsReceivable[0]).forEach(function(key) { %>
@@ -143,8 +139,6 @@
                                         <% }); %>
                                     </tr>
                                 <% }); %>
-
-                                <!-- Form Inputs -->
                                 <tr>
                                     <% var first = true; %>
                                     <% Object.keys(allFulfillmentDate[0]).forEach(function(key) { %>
@@ -168,7 +162,6 @@
             </div>
         </div>
 
-        <!-- Defaulters Table -->
         <div class="segment eight wide column">
             <h1>Defaulters Table:</h1>
             <div class="scrollable-table" id="scrollableTableDef" data-table-name="defaulters">

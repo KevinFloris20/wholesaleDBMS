@@ -1,15 +1,19 @@
 <div class="ui inverted footer">
-  <div class="ui container">
-    DATA BASE MANAGEMENT Group 5 - Wholesale Management System
-  </div>
+    <div class="ui container">
+        DATA BASE MANAGEMENT - Wholesale Database Management System
+    </div>
 </div>
 
 <script>
 
+    // make charts for the reports
     function createBarChartTable1(data) {
+        //checking so we dont get errors
+        if(document.getElementById('myChart') === null) return;
+        if(data.length === 0) return;
+
+        //chart
         const chartLoc = document.getElementById('myChart');
-        // chartLoc.style.height = '50px';
-        // chartLoc.style.width = '80px';
         const ctx = chartLoc.getContext('2d');
         const chart = new Chart(ctx, {
             type: 'bar',
@@ -45,6 +49,11 @@
     }
 
     function createPieChart1(data) {
+        //checking so we dont get errors
+        if(document.getElementById('myPieChart') === null) return;
+        if(data.length === 0) return;
+
+        //chart
         const ctx = document.getElementById('myPieChart').getContext('2d');
         const chart = new Chart(ctx, {
             type: 'pie',
@@ -70,6 +79,11 @@
     }
 
     function createBarChartTable2(data) {
+        //checking so we dont get errors
+        if(document.getElementById('myChart2') === null) return;
+        if(data.length === 0) return;
+
+        //chart
         const ctx = document.getElementById('myChart2').getContext('2d');
         const chart = new Chart(ctx, {
             type: 'bar',
@@ -110,6 +124,7 @@
         });
     }
 
+    //actual main stuff
     document.addEventListener('DOMContentLoaded', function() {
 
         //show table1
@@ -135,7 +150,9 @@
             }).catch(error => console.error('Error:', error));
 
         //for the show sql button
+        // this will show the sql queries that were used to generate the table for demo for all btns
         document.querySelectorAll('.showSqlButton').forEach(button => {
+            if(button === null) return;
             button.addEventListener('click', function() {
                 var targetId = this.getAttribute('data-target');
                 var scrollableTable = document.getElementById(targetId);
@@ -153,42 +170,39 @@
             });
         });
 
-        //for the new contextmenu
+        //replacement contextmenu to delete a right clicked row
         var contextMenu = document.createElement("div");
         contextMenu.innerHTML = "<div><button class='ui segment' id='deleteRow'>Delete Row</button></div>";
         contextMenu.style.display = "none";
         contextMenu.style.position = "absolute";
         document.body.appendChild(contextMenu);
 
-        // Right-click on any table row
+        //add the right clicking
         document.querySelectorAll('.ui.celled.table tbody tr').forEach(row => {
+            if(row === null) return;
             row.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
                 contextMenu.style.top = e.pageY + "px";
                 contextMenu.style.left = e.pageX + "px";
                 contextMenu.style.display = "block";
-
-                // Store the row for later use
                 contextMenu.rowElement = this;
 
-                // Find the closest .scrollable-table to get the table name
                 var closestTable = this.closest('.scrollable-table');
                 contextMenu.tableName = closestTable.dataset.tableName;
 
-                // Get the column name for the ID (assuming it's the first column)
                 var columnHeader = closestTable.querySelector('.ui.celled.table thead tr th:first-child');
                 contextMenu.columnName = columnHeader ? columnHeader.innerText : null;
             });
         });
 
-        // Click on delete option in the context menu
+        //delete opperations for delete
         document.getElementById('deleteRow').addEventListener('click', function() {
             var rowElement = contextMenu.rowElement;
-            var rowId = rowElement.querySelector('td:first-child').innerText; // Row ID is in the first cell
-            var tableName = contextMenu.tableName; // Table name
-            var columnName = contextMenu.columnName; // Column name
+            var rowId = rowElement.querySelector('td:first-child').innerText; 
+            var tableName = contextMenu.tableName; 
+            var columnName = contextMenu.columnName;
 
-            // AJAX request to the server to delete the row
+            //checking
             if (!rowId || !tableName || !columnName) {
                 console.error('Error deleting row: Missing data');
                 console.error('Row ID:', rowId);
@@ -196,6 +210,8 @@
                 console.error('Column name:', columnName);
                 return;
             }
+
+            //fetch opps, 
             fetch('/delete-row', {
                 method: 'POST',
                 headers: {
@@ -213,13 +229,8 @@
             }).catch((error) => {
                 console.error('Error:', error);
             });
-
-
-            // Hide the context menu
             contextMenu.style.display = "none";
         });
-
-        // Close the context menu if clicked elsewhere
         document.addEventListener('click', function(e) {
             if (e.target !== contextMenu) {
                 contextMenu.style.display = "none";
@@ -227,33 +238,29 @@
         });
 
         //for the dashbord and the customer list
-        document.getElementById('customerSelect').addEventListener('change', function() {
-            var newCustomerFields = document.getElementById('newCustomerFields');
-            if (this.value === 'new') {
-                newCustomerFields.style.display = 'block';
-            } else {
-                newCustomerFields.style.display = 'none';
-            }
-        });
+        if(document.getElementById('customerSelect') !== null){
+            document.getElementById('customerSelect').addEventListener('change', function() {
+                var newCustomerFields = document.getElementById('newCustomerFields');
+                if (this.value === 'new') {
+                    newCustomerFields.style.display = 'block';
+                } else {
+                    newCustomerFields.style.display = 'none';
+                }
+            });
+        }
 
-        //dashboard tabbing
+
+        //dashboard tabbing for the very top header menu
         var menuItems = document.querySelectorAll('.menu .item');
         var tabSegments = document.querySelectorAll('.tab.segment');
 
         menuItems.forEach(function(tab) {
             if(tab.id === 'dash'){
                 tab.addEventListener('click', function(event) {
-                    // Prevent default link behavior
                     event.preventDefault();
-
-                    // Get the data-tab attribute of the clicked tab
                     var activeTab = this.getAttribute('data-tab');
-
-                    // Remove 'active' class from all menu items and tab segments
                     menuItems.forEach(item => item.classList.remove('active'));
                     tabSegments.forEach(segment => segment.classList.remove('active'));
-
-                    // Add 'active' class to the clicked tab and its corresponding content
                     this.classList.add('active');
                     document.querySelector('.tab.segment[data-tab="' + activeTab + '"]').classList.add('active');
                 });
