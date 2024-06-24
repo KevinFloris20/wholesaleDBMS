@@ -44,4 +44,4 @@ To achieve and fulfill the business requirements of a Wholesaler, a Database man
 
 ## Finished Product Overview:
 
-[Product Overview](https://drive.google.com/file/d/1lNI4zXnCeySTDV01tnSG8EgDIwC00-ZW/view?usp=drive_link)
+[![Product Overview](./screenshot/image.png)](https://drive.google.com/file/d/1lNI4zXnCeySTDV01tnSG8EgDIwC00-ZW/view?usp=drive_link)
