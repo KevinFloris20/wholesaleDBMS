@@ -27,18 +27,18 @@ To achieve and fulfill the business requirements of a Wholesaler, a Database man
 2. Download all of the dependencies (npm install or npm installAllThings)
 3. Add your own database credentials in the .env file
     Details:
-    touch cred.env //do this in in the root dir
-    //Add these lines:
-    //local database
-    DB_HOST=localhost
-    DB_USER=root
-    DB_PASS=********
-    DB_NAME=********
-    // cloud db
-    GDB_HOST=********
-    GDB_USER=********
-    GDB_PASS=********
-    GDB_NAME=********
+    -touch cred.env //do this in in the root dir
+    -//Add these lines:
+    -//local database
+    -DB_HOST=localhost
+    -DB_USER=root
+    -DB_PASS=********
+    -DB_NAME=********
+    -// cloud db
+    -GDB_HOST=********
+    -GDB_USER=********
+    -GDB_PASS=********
+    -GDB_NAME=********
 4. Run the project (node server.js or npm start)
 5. Open the browser and go to port 8080, localhost:8080
 
